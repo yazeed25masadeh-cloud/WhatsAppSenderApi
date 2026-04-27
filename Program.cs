@@ -1,38 +1,30 @@
 using Microsoft.EntityFrameworkCore;
 using WhatsAppSenderApi.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // ربط الـ DbContext بـ PostgreSQL
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// إعداد الـ CORS عشان نسمح لـ Vercel يشبك
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowMyScreen", policy =>
+    options.AddPolicy("AllowAll", policy =>
     {
-        policy.WithOrigins("http://localhost:4200") // رابط شاشتنا
+        policy.AllowAnyOrigin()
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
 });
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll",
-        policy => policy.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader());
-});
-
 var app = builder.Build();
 
+// تشغيل الـ CORS (مكانه هون جداً حساس ومهم)
 app.UseCors("AllowAll");
-
-app.UseCors("AllowMyScreen");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
