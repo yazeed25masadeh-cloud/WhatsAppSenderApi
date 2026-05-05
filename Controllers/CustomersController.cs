@@ -50,7 +50,7 @@ namespace WhatsAppSenderApi.Controllers
             return NoContent(); // بنرجع رد "لا يوجد محتوى" كدليل على النجاح
         }
 
-        // 4. أمر لتعديل بيانات زبون
+// 4. أمر لتعديل بيانات زبون
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCustomer(int id, Customer updatedCustomer)
         {
@@ -60,13 +60,13 @@ namespace WhatsAppSenderApi.Controllers
                 return NotFound(); // إذا الزبون مش موجود
             }
 
-            // تحديث البيانات
+            // تحديث البيانات (هون ضفنا سطر الـ VIP)
             customer.Name = updatedCustomer.Name;
             customer.PhoneNumber = updatedCustomer.PhoneNumber;
+            customer.isVIP = updatedCustomer.isVIP; // <--- هذا السطر اللي كان ناقص!
             
             await _context.SaveChangesAsync();
 
             return Ok(customer); // نرجع الزبون بعد التحديث
         }
-    } // <--- هذا القوس بيسكر الكلاس (CustomersController)
 } // <--- هذا القوس بيسكر الـ (namespace)
